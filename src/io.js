@@ -1,48 +1,83 @@
-(function (exports) {
-"use strict";
-	
 /*jslint node: true*/
-var fs = require("fs"),
-	_ = require("underscore"),
-	parser = require("./parser.js"),
-	pathUtil = require("path");
+(function (exports) {
+	"use strict";
+	
+	var fs = require("fs"),
+		_ = require("underscore"),
+		pathUtil = require("path"),
+		parser = require("./parser.js");
 
-var readSourceFile = function (directory, filename, reference, callback, stack, allStack) {
-	var path = pathUtil.normalize(directory + "/" + filename);
+	var createDependencyStack = function (directory, filename, reference, callback, stack, processedFiles) {
+		var path = pathUtil.normalize(directory + "/" + filename);
 	
-	stack = stack || [];
-	allStack = allStack || [];
+		stack = stack || [];
+		processedFiles = processedFiles || [];
 	
-	if (_.contains(allStack, path)) {
-		// path is already processed; continue
-		callback(stack);
-		if (!_.contains(stack, path)) {
-			console.warn("circular dependency to '" + path + "' from '" + reference + "'");
+		if (_.contains(processedFiles, path)) {
+			// path is already processed; continue
+			callback(stack);
+			return;
 		}
-		return;
-	}
-	// allStack just holds all files for which processing has been started
-	allStack.push(path);
+		// processedFiles just holds all files for which processing has been started
+		processedFiles.push(path);
 	
-	try {
-		var data = fs.readFileSync(path),
-			deps = parser.parse(data.toString()),
-			afterAllDependenciesAreProcessed = _.after(deps.length, function () {
-				stack.push(path);
+		fs.readFile(path, function (err, data) {
+			if (err) {
+				console.error("file '" + path + "' referenced from " + reference + " not found");
 				callback(stack);
-			}); 
-	
-		deps.forEach(function (dep) {
-			var depPath = pathUtil.normalize(directory + "/" + dep);
-			readSourceFile(pathUtil.dirname(depPath), pathUtil.basename(depPath), path, afterAllDependenciesAreProcessed, stack, allStack);
+				return;
+			}
+			var deps = parser.parse(data.toString()),
+				loopOverDependencies = function () {
+					if (deps.length) {
+						var dep = deps.shift(), // pop first element of array
+							depPath = pathUtil.normalize(directory + "/" + dep);
+						
+						createDependencyStack(
+							pathUtil.dirname(depPath), 
+							pathUtil.basename(depPath), 
+							path, 
+							loopOverDependencies, 
+							stack, 
+							processedFiles
+						);
+					} else {
+						stack.push(path);
+						callback(stack);
+					}
+				};
+			// serialize async file access
+			loopOverDependencies();
 		});
-	} catch (e) {
-		console.error("file '" + path + "' referenced from " + reference + " not found");
-		callback(stack);
-		return;
-	}
+	};
 	
-};
+	var concatenate = function concatenate(stack, callback) {
+		var output = [],
+			completed = _.after(stack.length, function () {
+				callback(output.join("\n"));
+			});
+			
+		stack.forEach(function (path, idx) {
+			fs.readFile(path, function (err, data) {
+				output[idx * 2] = "// file: " + path;
+				output[idx * 2 + 1] = data.toString();
+				completed();
+			});
+		});
+	};
+	
+	var isInsideRootPath = function checkRootPath(stack, rootPath) {
+		var valid = true,
+			regEx = new RegExp("^" + rootPath);
+		stack.forEach(function (path) {
+			if (!path.match(regEx)) {
+				valid = false;
+			}
+		});
+		return valid;
+	};
 
-exports.readSourceFile = readSourceFile;
+	exports.createDependencyStack = createDependencyStack;
+	exports.concatenate = concatenate;
+	exports.isInsideRootPath = isInsideRootPath;
 }(this));

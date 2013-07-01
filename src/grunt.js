@@ -1,22 +1,37 @@
-
-console.error("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-
 module.exports = function(grunt) {
-	console.error("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+	"use strict";
 	
-	grunt.registerTask('resolve', 'Resolves all require tags to get concatenation order', function() {
-		var io = require("./src/io.js"),
-			_ = require("underscore"),
-			done = this.async(),
-			srcRoot = grunt.config("resolve.options.root"),
-			files = _.map(grunt.config("resolve.options.files"), function (file) {
-				return pathUtil.normalize(srcRoot + "/" + file);
+	var io = require("./lib/io.js"),
+		fs = require("fs"),
+		pathUtil = require("path"),
+		_ = require("underscore"),
+		pwd = pathUtil.resolve(".");
+		
+		
+	var writeFile = function (file, completed, logger, content) {
+			logger();
+			fs.writeFile(file, content, function (err) {
+				if (err) {
+					console.error("error writing to " + file, err);
+				}
+				completed();
+			});
+		},
+		writeLog = function (srcFile, destFile) {
+			return function () {
+				grunt.log.writeln("[resolve] write resolved file '" + srcFile+ "' to " + destFile);
+			};
+		};
+		
+	grunt.registerTask("resolve", "Resolves all 'require' lines to get concatenation order", function() {
+		var done = this.async(),
+			distRoot = pwd + pathUtil.sep + (grunt.config("resolve.dist") || "dist" ),
+			files = _.map(grunt.config("resolve.files") || [], function (file) {
+				return pathUtil.normalize(pwd + pathUtil.sep + file);
 			}),
 			completed = _.after(files.length, function () {
 				done();
 			});
-		
-		grunt.log.writeln("concatenate files ... ", files);
 	
 		files.forEach(function (path) {
 			io.createDependencyStack(
@@ -24,10 +39,8 @@ module.exports = function(grunt) {
 				pathUtil.basename(path), 
 				"Gruntfile.js", 
 				function (deps) {
-					io.concatenate(deps, function (src) {
-						grunt.log.writeln(src);
-						completed();
-					});
+					var destFile = distRoot + "/" + pathUtil.basename(path);
+					io.concatenate(deps, _.partial(writeFile, destFile, completed, writeLog(path, destFile)));
 				}
 			);
 		});

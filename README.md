@@ -33,7 +33,7 @@ In the <code>Gruntfile.js</code> we put now
 grunt.loadTasks("tasks"); // TODO: change to npmLoad
 </code></pre>
 
-This will create <code>dist/app.js</code> with the concatenated source code. <i>resolve</i> resolves files recursively, managed normalizes multiple dependencies to a given file, skips declared depenencies not found on disk and is robust concerning circular dependencies (does not loop).
+This will create <code>dist/app.js</code> with the concatenated source code. <i>resolve</i> resolves files recursively, normalizes multiple dependencies from and to a given file, skips declared dependencies not found on disk and is robust concerning circular dependencies (does not loop).
 
 # Declaring dependencies
 

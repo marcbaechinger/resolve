@@ -11,7 +11,8 @@ var controller = new controller.Controller({
   container: "#page-container"
 });</code></pre>
 
-Thie is <code>controller.js</code> to be prepended to <code>foo.js</code>
+This is <code>controller.js</code> to be prepended to <code>app.js</code>.
+
 <pre><code javascript>(function (global) {
   global.controller = {
     Controller: function Controller(spec) {
@@ -20,7 +21,7 @@ Thie is <code>controller.js</code> to be prepended to <code>foo.js</code>
   };
 }(this));</code></pre>
 
-In the <code>Gruntfile.js</code> there we put now
+In the <code>Gruntfile.js</code> we put now
 
 <pre><code javascript>grunt.initConfig({
 	[...]
@@ -29,10 +30,10 @@ In the <code>Gruntfile.js</code> there we put now
 	}
 });
 
-grunt.loadTasks("src"); // TODO: change to npmLoad
+grunt.loadTasks("tasks"); // TODO: change to npmLoad
 </code></pre>
 
-This will create <code>dist/app.js</code> with the concatenated source code. <i>resolve</i> resolves files recursively, skips declared depenencies not found on disk and is robust concerning circular dependencies (does not loop).
+This will create <code>dist/app.js</code> with the concatenated source code. <i>resolve</i> resolves files recursively, managed normalizes multiple dependencies to a given file, skips declared depenencies not found on disk and is robust concerning circular dependencies (does not loop).
 
 # Declaring dependencies
 

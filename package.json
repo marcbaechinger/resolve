@@ -1,6 +1,6 @@
 {
   "name": "resolve",
-  "resolve require tags in JavaScript files and concatenate the files accordingly."
+  "description": "Resolve require tags in JavaScript files and concatenate the files accordingly.",
   "version": "0.1.0",
   "author": {
 	  "name": "Marc Bächinger, twitter: @marcbaechinger"

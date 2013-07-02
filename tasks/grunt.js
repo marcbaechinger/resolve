@@ -26,21 +26,24 @@ module.exports = function(grunt) {
 	grunt.registerTask("resolve", "Resolves all 'require' lines to get concatenation order", function() {
 		var done = this.async(),
 			distRoot = pwd + pathUtil.sep + (grunt.config("resolve.dist") || "dist" ),
-			files = _.map(grunt.config("resolve.files") || [], function (file) {
+			relativeFiles = grunt.config("resolve.files") || [],
+			files = _.map(relativeFiles, function (file) {
 				return pathUtil.normalize(pwd + pathUtil.sep + file);
 			}),
+			omits = grunt.config("resolve.exclude") || {},
 			completed = _.after(files.length, function () {
 				done();
 			});
 	
-		files.forEach(function (path) {
+		files.forEach(function (path, idx) {
 			io.createDependencyStack(
 				pathUtil.dirname(path), 
 				pathUtil.basename(path), 
 				"Gruntfile.js", 
 				function (deps) {
-					var destFile = distRoot + "/" + pathUtil.basename(path);
-					io.concatenate(deps, _.partial(writeFile, destFile, completed, writeLog(path, destFile)));
+					var destFile = distRoot + "/" + pathUtil.basename(path),
+						omit = omits[relativeFiles[idx]];
+					io.concatenate(deps, _.partial(writeFile, destFile, completed, writeLog(path, destFile)), omit);
 				}
 			);
 		});

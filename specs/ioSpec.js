@@ -150,4 +150,18 @@ describe("io module:", function ioModuleSuite() {
 		expect(checker("/here")).toBe(false);
 		
 	});
+	
+	// ommiting files
+	it("test filtering files by regular expression array", function () {
+		var files = ["/home/some/file1.js", "/home/some/file2.js", "/home/some/file3.js"];
+		expect(io.filterOmittedFiles(files, ["2.js$"])).toEqual([files[0], files[2]]);
+	});
+	it("test filtering files by regular expression array with mulitpile expressions", function () {
+		var files = ["/home/some/file1.js", "/home/some/file2.js", "/home/some/file3.js"];
+		expect(io.filterOmittedFiles(files, ["1.*js$", "2.*js$"])).toEqual([files[2]]);
+	});
+	it("test filtering files by regular expression array without expressions", function () {
+		var files = ["/home/some/file1.js", "/home/some/file2.js", "/home/some/file3.js"];
+		expect(io.filterOmittedFiles(files, [])).toEqual(files);
+	});
 });

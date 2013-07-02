@@ -54,11 +54,42 @@
 		});
 	};
 	
-	var concatenate = function concatenate(stack, callback) {
-		var output = [],
-			completed = _.after(stack.length, function () {
-				callback(output.join("\n"));
+	var filterOmittedFiles = function (stack, omitRegExArr) {
+		var expressions = _.map(omitRegExArr, function (expr) {
+			return new RegExp(expr);
+		});
+		
+		return _.filter(stack, function (file) {
+			var keepFile = true;
+			expressions.forEach(function (expr) {
+				if (file.match(expr)) {
+					keepFile = false;
+				}
 			});
+			return keepFile;
+		});
+	};
+	
+	var concatenate = function concatenate(stack, callback, omitRegExArr) {
+		var output = [],
+			completed;
+			
+		if (omitRegExArr) {
+			// filter files to omit
+			stack = _.filter(stack, function (file) {
+				var keepFile = true;
+				omitRegExArr.forEach(function (expr) {
+					if (file.match(expr)) {
+						keepFile = false;
+					}
+				});
+				return keepFile;
+			});
+		}
+		
+		completed = _.after(stack.length, function () {
+			callback(output.join("\n"));
+		});
 			
 		stack.forEach(function (path, idx) {
 			fs.readFile(path, function (err, data) {
@@ -83,4 +114,5 @@
 	exports.createDependencyStack = createDependencyStack;
 	exports.concatenate = concatenate;
 	exports.isInsideRootPath = isInsideRootPath;
+	exports.filterOmittedFiles = filterOmittedFiles;
 }(this));

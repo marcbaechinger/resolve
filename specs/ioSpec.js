@@ -1,6 +1,6 @@
 describe("io module:", function ioModuleSuite() {
 	
-	var io = require("../src/lib/io.js"),
+	var io = require("../tasks/lib/io.js"),
 		_ = require("underscore");
 	
 	it("test simple linear dependencies", function (done) {

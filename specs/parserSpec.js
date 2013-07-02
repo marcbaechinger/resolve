@@ -1,7 +1,7 @@
 describe("parser module:", function parseModuleSuite() {
 	"use strict";
 	
-	var parser = require("../src/lib/parser.js");
+	var parser = require("../tasks/lib/parser.js");
 	
 	it("test availability of parser module and it public functions", function testModuleAvailability() {
 		expect(typeof parser).toBe("object");

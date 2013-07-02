@@ -25,7 +25,7 @@ Have <code>grunt-resolve</code> in your <code>package.json</code>
 
 <pre><code javascript>{
   "name": "your-project-name",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-resolve": "~0.1.0"

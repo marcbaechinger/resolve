@@ -21,6 +21,17 @@ This is <code>controller.js</code> to be prepended to <code>app.js</code>.
   };
 }(this));</code></pre>
 
+Have <code>grunt-resolve</code> in your <code>package.json</code> 
+
+<pre><code javascript>{
+  "name": "your-project-name",
+  "version": "0.1.0",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-resolve": "~0.1.0"
+  }
+}</code></pre>
+
 In the <code>Gruntfile.js</code> we put now
 
 <pre><code javascript>grunt.initConfig({
@@ -30,7 +41,7 @@ In the <code>Gruntfile.js</code> we put now
 	}
 });
 
-grunt.loadTasks("tasks"); // TODO: change to npmLoad
+grunt.loadNpmTasks('grunt-resolve');
 </code></pre>
 
 This will create <code>dist/app.js</code> with the concatenated source code. <i>resolve</i> resolves files recursively, normalizes multiple dependencies from and to a given file, skips declared dependencies not found on disk and is robust concerning circular dependencies (does not loop).

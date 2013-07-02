@@ -1,5 +1,5 @@
 {
-  "name": "resolve",
+  "name": "grunt-resolve",
   "description": "Resolve require tags in JavaScript files and concatenate the files accordingly.",
   "version": "0.1.0",
   "author": {

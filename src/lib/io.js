@@ -32,7 +32,10 @@
 					if (deps.length) {
 						var dep = deps.shift(), // pop first element of array
 							depPath = pathUtil.normalize(directory + "/" + dep);
-						
+
+						if (!depPath.match(/\.js/)) {
+							depPath += ".js";
+						}
 						createDependencyStack(
 							pathUtil.dirname(depPath), 
 							pathUtil.basename(depPath), 

@@ -1,0 +1,11 @@
+.npmignore
+.editorconfig
+.jshintrc
+.jshintignore
+.gitattributes
+.idea
+.grunt
+.DS_Store
+.git
+.gitignore
+specs

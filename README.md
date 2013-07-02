@@ -70,6 +70,9 @@ The complete configuration options are as follows:
 <pre><code javascript>grunt.initConfig({
 	resolve: {
 		files: [ "src/app.js", "modules/google-analytics.js" ],
-		dist: "outputdir"
+		dist: "outputdir",
+		exclude: {
+			"src/app.js": ["Spec\\.js$", "test-*\\.js$"]
+		}
 	}
 });</code></pre>

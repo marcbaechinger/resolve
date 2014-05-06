@@ -17,7 +17,7 @@ var lineSeparator = function(data) {
 		return line.substring(startPos, endPos).split(",");
 	},
 	requireLineFilter = function(line) {
-		return !!(line.match(/^\/\/\s*=\s*require/));
+		return !!(line.match(/=\s*require/));
 	},
 	requireLineTokenizer = function(line) {
 		return _.map(

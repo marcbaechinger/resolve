@@ -1,5 +1,5 @@
 module.exports = function(grunt) {
-	
+
 	// Project configuration.
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
@@ -8,18 +8,25 @@ module.exports = function(grunt) {
 			exclude: {
 				"specs/samples/dep2.js": ["2-1*\\.js$"]
 			}
+		},
+
+		jasmine_node: {
+			options: {
+				extensions: 'js',
+		    specNameMatcher: 'Spec'
+			},
+			all: ['specs/']
 		}
 	});
 
 
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-concat');
-	grunt.loadNpmTasks('grunt-contrib-jasmine');
+	grunt.loadNpmTasks('grunt-jasmine-node');
 
 	grunt.loadTasks("tasks");
 
 	// Default task(s).
 	grunt.registerTask('default', ['concat']);
-	
+
 };
-	

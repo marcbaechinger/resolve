@@ -3,7 +3,7 @@
   "description": "Resolve require tags in JavaScript files and concatenate the files accordingly.",
   "version": "0.1.2",
   "author": {
-	  "name": "Marc Bächinger, twitter: @marcbaechinger"
+    "name": "Marc Bächinger, twitter: @marcbaechinger"
   },
   "engines": {
     "node": ">= 0.8.0"
@@ -12,10 +12,10 @@
     "test": "grunt jasmine"
   },
   "dependencies": {
-  	"underscore": "*"
+    "underscore": "*"
   },
   "repository": {
-  	"type": "git",
+    "type": "git",
     "url": "git://github.com/marcbaechinger/resolve.git"
   },
   "licenses": [
@@ -34,7 +34,7 @@
     "grunt": "~0.4.1"
   },
   "peerDependencies": {
-    "grunt": "~0.4.0"
+    "grunt": ">=0.4.0"
   },
   "keywords": [
     "gruntplugin"
